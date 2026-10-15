@@ -1,11 +1,11 @@
-# 🧠 Neuro-Virality Predictor
+# 🧠 Neuro-Virality Predictor & NeuroClip AI
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kethysb/neuro-virality-predictor/blob/main/notebooks/neuro_virality_predictor.ipynb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Model: Meta TRIBE v2](https://img.shields.io/badge/Model-Meta_TRIBE_v2-purple.svg)](https://github.com/facebookresearch/tribev2)
 
-> **Predict human cortical fMRI responses, second-by-second attention spikes, and retention curves for short-form video hooks using NeuroAI.**
+> **O "OpusClip Neurocientífico": Transcreva, selecione momentos narrativos, audite a atenção cerebral humana via fMRI (Meta TRIBE v2) e renderize clipes verticais 9:16 com legendas kinéticas automáticas.**
 
 ---
 
@@ -14,6 +14,28 @@
 Abaixo está o resultado de inferência de um gancho de 15 segundos extraído de um Reel do Instagram, alinhando **vídeo frame a frame**, **onda acústica do áudio**, **transcrição fonética do Whisper** e o **mapa térmico 3D da superfície cerebral** (`fsaverage5`):
 
 ![Mapa de Ativação Cerebral fMRI](assets/gancho_cerebro_3d_15s.png)
+
+---
+
+## ⚡ Novo Módulo: NeuroClip AI (OpusClip Open Source + Neurociência)
+
+O **NeuroClip** junta o melhor dos dois mundos:
+1. **Ingestão Universal**: Baixa vídeos de links do YouTube, Instagram ou arquivos locais.
+2. **Transcrição em Nível de Palavras**: Usa **Whisper** para mapear cada palavra e timestamp exato.
+3. **Seleção de Melhores Momentos (Sem APIs Pagas)**: Analisa quebras de padrão, ganchos e narrativa sem depender de créditos caros da OpenAI.
+4. **Auditoria Neurocientífica (TRIBE v2)**: Avalia o sinal BOLD dos primeiros 15s e só aprova o corte se a retenção biológica for alta.
+5. **Renderizador 9:16 com Rastreio de Rosto**: Centraliza o orador dinamicamente, normaliza o áudio em -16 LUFS e queima legendas kinéticas em amarelo neon (`#FACC15`).
+
+### 💻 Como rodar o NeuroClip no seu computador:
+
+```bash
+# Executar no vídeo baixado ou link direto
+python src/neuroclip.py --input "https://www.youtube.com/watch?v=SEU_VIDEO" --max-clips 3
+```
+
+Saída gerada na pasta `outputs/`:
+* `clip_01_nota_98.mp4` (Corte vertical 1080x1920 pronto para Reels/TikTok)
+* `neuroclip_relatorio.json` (Diagnóstico completo de pontuação e segundo exato do pico de atenção)
 
 ---
 
@@ -27,63 +49,38 @@ Diferente de métricas superficiais de "visualizações" ou "likes", este pipeli
 
 ---
 
-## 🏗️ Arquitetura Multimodal
-
-O pipeline realiza a fusão de três modalidades sensoriais antes de projetar as respostas nos **20.484 vértices corticais**:
+## 🏗️ Arquitetura do Sistema
 
 ```
-[ Vídeo (.mp4) ]
-   ├── Áudio: Wav2Vec-BERT (Padrões acústicos e entonação)
-   ├── Fala & Texto: WhisperX + LLaMA-3.2-3B (Embeddings contextuais palavra por palavra)
-   └── Visão: V-JEPA 2 + DINOv2 (Estrutura espacial e dinâmica a 30 fps)
-         │
-         ▼
-[ Fusão Multimodal TRIBE v2 ] ──► [ Preditor fMRI Cortical (fsaverage5) ]
-                                          │
-                                          ▼
-                               [ Mapa 3D & Curva de Atenção ]
+[ Vídeo Longo / Link ]
+          │
+          ▼
+ [ Whisper Transcriber ] ──► [ Segment Selector (Antigravity Logic) ]
+                                            │
+                                            ▼
+                               [ TRIBE v2 Neuro Validator ]
+                               (Sinal BOLD > 80? Aprovado!)
+                                            │
+                                            ▼
+                             [ Video Editor 9:16 (FFmpeg) ]
+                             - Face-Centering & Auto-Crop
+                             - Legendas Kinéticas (#FACC15)
+                             - Loudnorm -16 LUFS
+                                            │
+                                            ▼
+                               [ Clipes Campeões Prontos ]
 ```
 
 ---
 
 ## 🚀 Como Executar em 1 Clique (Google Colab)
 
-A forma mais rápida e prática de rodar em qualquer GPU T4 gratuita:
+A forma mais rápida de rodar a predição fMRI 3D completa em qualquer GPU T4 gratuita:
 
 1. Clique no botão [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kethysb/neuro-virality-predictor/blob/main/notebooks/neuro_virality_predictor.ipynb)
 2. Faça o upload do seu vídeo de até 15–30 segundos no Colab (ex: `gancho_teste_15s.mp4`).
 3. Execute todas as células (`Ambiente de Execução > Executar tudo`).
 4. O notebook gera e baixa automaticamente o mapa de ativação 3D (`gancho_cerebro_3d_15s.png`).
-
----
-
-## 💻 Execução Local / CLI
-
-### 1. Clonar o repositório
-```bash
-git clone https://github.com/kethysb/neuro-virality-predictor.git
-cd neuro-virality-predictor
-```
-
-### 2. Instalar dependências
-```bash
-pip install -r requirements.txt
-pip install "tribev2[plotting] @ git+https://github.com/facebookresearch/tribev2.git"
-```
-
-### 3. Extrair os primeiros 15s de qualquer Reel / TikTok / Shorts
-```bash
-python src/extract_hook.py "https://www.instagram.com/reel/DechDEGCfcs/" "gancho.mp4" 15
-```
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-* **[Meta TRIBE v2](https://github.com/facebookresearch/tribev2)**: Modelo mestre de NeuroAI para predição fMRI.
-* **[Unsloth LLaMA 3.2 3B](https://huggingface.co/unsloth/Llama-3.2-3B)**: Extrator semântico de linguagem com bypass aberto.
-* **[WhisperX](https://github.com/m-bain/whisperX)**: Alinhamento fonético temporal exato em nível de palavras.
-* **[PyTorch](https://pytorch.org/) & [Nilearn](https://nilearn.github.io/)**: Processamento de tensores neurais e malhas neuroanatômicas 3D.
 
 ---
 
